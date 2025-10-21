@@ -5,6 +5,7 @@ import { useGame } from "../context/GameContext";
 export default function Home() {
   const navigate = useNavigate();
   const { startGame, resumeGame, resetGame } = useGame();
+  
   const [savedGame, setSavedGame] = useState(null);
 
   useEffect(() => {
