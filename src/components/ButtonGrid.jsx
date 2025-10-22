@@ -166,7 +166,7 @@ export default function ButtonGrid() {
     }
   };
 
-  const specialButtons = ["Miss", "Bull", "Cherry", "Bust", "Undo"];
+  const specialButtons = ["MISS", "BULL", "CHERRY", "BUST", "UNDO"];
   const numbers = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (
@@ -184,19 +184,19 @@ export default function ButtonGrid() {
               e.stopPropagation();
               e.preventDefault();
               switch (btn) {
-                case "Miss":
-                  addThrow(0, "Miss");
+                case "MISS":
+                  addThrow(0, "MISS");
                   break;
-                case "Bull":
-                  addThrow(25, "Bull");
+                case "BULL":
+                  addThrow(25, "BULL");
                   break;
-                case "Cherry":
-                  addThrow(50, "Cherry");
+                case "CHERRY":
+                  addThrow(50, "CHERRY");
                   break;
-                case "Bust":
-                  addThrow(0, "Bust");
+                case "BUST":
+                  addThrow(0, "BUST");
                   break;
-                case "Undo":
+                case "UNDO":
                   undoLastThrow();
                   break;
                 default:
@@ -233,7 +233,7 @@ export default function ButtonGrid() {
           className="fixed text-white p-0 rounded shadow-lg z-50 flex flex-col items-stretch overflow-visible"
           style={{ top: popupPos.y, left: popupPos.x, width: popupPos.width || popupInfo.anchorRect.width }}
         >
-          {[2, 3].map((mult) => (
+          {[3, 2].map((mult) => (
             <button
               key={mult}
               className={`px-4 m-0 rounded hover:brightness-90 ${getMultiplierColor(popupInfo.score)}`}
