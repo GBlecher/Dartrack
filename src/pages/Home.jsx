@@ -9,12 +9,13 @@ export default function Home() {
   const [savedGame, setSavedGame] = useState(null);
 
   useEffect(() => {
-    const gameData = localStorage.getItem("dartGame");
-    if (gameData) setSavedGame(JSON.parse(gameData));
+    const saved = localStorage.getItem("dartrack_saved_game") || localStorage.getItem("dartGame");
+    if (saved) setSavedGame(JSON.parse(saved));
   }, []);
 
   const handleNewGame = () => {
     resetGame();
+    localStorage.removeItem("dartrack_saved_game");
     localStorage.removeItem("dartGame");
     navigate("/select");
   };
@@ -22,7 +23,7 @@ export default function Home() {
   const handleContinueGame = () => {
     if (savedGame) {
       resumeGame(savedGame);
-      navigate(`/game/${savedGame.gameType}`);
+      navigate(`/game/${savedGame.gameType}`, { replace: true });
     }
   };
 

@@ -194,7 +194,7 @@ export default function ButtonGrid() {
                   addThrow(50, "CHERRY");
                   break;
                 case "BUST":
-                  addThrow(0, "BUST");
+                  addThrow("BUST", "BUST");
                   break;
                 case "UNDO":
                   undoLastThrow();

@@ -7,7 +7,8 @@ export default function GameSelect() {
 
   const selectGame = (type) => {
     startGame(type);
-    navigate(`/game/${type}`);
+    // replace history entry so Back returns to Home instead of GameSelect
+    navigate(`/game/${type}`, { replace: true });
   };
 
   return (

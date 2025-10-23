@@ -4,7 +4,7 @@ import React from "react";
 import { useGame } from "../context/GameContext";
 
 export default function ScoreBoard() {
-  const { players, currentPlayerIndex } = useGame();
+  const { players, currentPlayerIndex, currentThrowIndex } = useGame();
   const player = players[currentPlayerIndex];
   if (!player) return null;
 
@@ -15,11 +15,17 @@ export default function ScoreBoard() {
       <p>Turn Score: {player.turnScore}</p>
       <p>Last Throw: {player.lastThrowType || " "}</p>
       <div className="flex gap-2 mt-2">
-        {player.throws.map((t, i) => (
-          <span key={i} className="bg-gray-700 px-2 py-1 rounded">
-            {t}
-          </span>
-        ))}
+        {player.throws.map((t, i) => {
+          const isCurrent = i === currentThrowIndex;
+          return (
+            <span
+              key={i}
+              className={`px-2 py-1 rounded flex items-center ${isCurrent ? "bg-gray-600 text-white font-semibold ring-2 ring-gray-500/30 text-lg" : "bg-gray-700"}`}
+            >
+              <span className="mr-2">{t?.score ?? 0}</span>
+            </span>
+          );
+        })}
       </div>
     </div>
   );

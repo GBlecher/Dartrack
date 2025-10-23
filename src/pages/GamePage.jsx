@@ -1,35 +1,24 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 import { useGame } from "../context/GameContext";
 import PlayerTabs from "../components/PlayerTabs";
 import ScoreBoard from "../components/ScoreBoard";
 import ButtonGrid from "../components/ButtonGrid";
+import EndTurnModal from "../components/EndTurnModal";
+import WinnerModal from "../components/WinnerModal";
+import Header from "../components/Header";
 
 export default function GamePage() {
-  const { id } = useParams();
-  const { players, addThrow, nextTurn } = useGame();
-  const [activePlayerIndex, setActivePlayerIndex] = useState(0);
+  useGame();
 
-  const handleAction = (value, type) => {
-    const currentPlayer = activePlayerIndex;
-    if (typeof value === "number") {
-      addThrow(currentPlayer, value, type === "hold" ? "triple" : "single");
-    } else {
-      // handle special actions
-      console.log(`Special action: ${value}`);
-    }
-    nextTurn();
-  };
-
+  // ButtonGrid already uses context's addThrow; keep GamePage simple
   return (
     <div className="min-h-screen bg-slate-900 p-4">
-      <PlayerTabs
-        players={players}
-        activeIndex={activePlayerIndex}
-        setActiveIndex={setActivePlayerIndex}
-      />
-      <ScoreBoard player={players[activePlayerIndex]} />
-      <ButtonGrid onAction={handleAction} />
+      <Header />
+      <PlayerTabs />
+      <ScoreBoard />
+      <ButtonGrid />
+  <EndTurnModal />
+  <WinnerModal />
     </div>
   );
 }
