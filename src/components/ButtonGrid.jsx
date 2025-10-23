@@ -232,7 +232,7 @@ export default function ButtonGrid() {
           className="fixed text-white p-0 rounded shadow-lg z-50 flex flex-col items-stretch overflow-visible"
           style={{ top: popupPos.y, left: popupPos.x, width: popupPos.width || popupInfo.anchorRect.width }}
         >
-          {[2, 3].map((mult) => (
+          {[3, 2].map((mult) => (
             <button
               key={mult}
               className={`px-4 m-0 rounded hover:brightness-90 ${getMultiplierColor(popupInfo.score)}`}
