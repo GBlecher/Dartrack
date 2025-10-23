@@ -4,7 +4,7 @@ import { useGame } from "../context/GameContext";
 
 export default function Home() {
   const navigate = useNavigate();
-  const { startGame, resumeGame, resetGame } = useGame();
+  const { resumeGame, resetGame } = useGame();
 
   const [savedGame, setSavedGame] = useState(null);
 
@@ -28,7 +28,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-600 to-indigo-800 text-white text-center p-6 space-y-6">
+    <div className="home-page h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-600 to-indigo-800 text-white text-center p-6 space-y-6">
       <h1 className="text-4xl font-bold mb-8">Welcome to Dartrack 🎯</h1>
 
       <button

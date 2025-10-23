@@ -9,8 +9,8 @@ export default function ScoreBoard() {
   if (!player) return null;
 
   return (
-    <div className="scoreBoard bg-gray-800 rounded-lg p-4 text-white w-full max-w-md mx-auto mb-4">
-      <h2 className="text-xl font-bold mb-2">{player.name}</h2>
+    <div className="score-board scoreBoard bg-gray-800 rounded-lg p-4 text-white w-full max-w-md mx-auto mb-4">
+      
       <p>Total Score: {player.playerScore}</p>
       <p>Turn Score: {player.turnScore}</p>
       <p>Last Throw: {player.lastThrowType || " "}</p>

@@ -23,9 +23,11 @@ export const GameProvider = ({ children }) => {
 
   const startGame = (type) => {
     setGameType(type);
+    const defaultColors = ["#1E40AF", "#047857"];
     setPlayers([
       {
         name: "Player 1",
+        color: defaultColors[0],
         playerScore: type,
         turnScore: type,
         lastThrowType: null,
@@ -37,6 +39,7 @@ export const GameProvider = ({ children }) => {
       },
       {
         name: "Player 2",
+        color: defaultColors[1],
         playerScore: type,
         turnScore: type,
         lastThrowType: null,
@@ -352,7 +355,16 @@ export const GameProvider = ({ children }) => {
         resumeGame: (payload) => {
           if (!payload) return;
           if (payload.gameType) setGameType(payload.gameType);
-          if (payload.players) setPlayers(payload.players);
+          if (payload.players) {
+            // ensure players have colors
+            const defaultColors = ["#1E40AF", "#047857"];
+            setPlayers(
+              payload.players.map((p, i) => ({
+                color: p.color || defaultColors[i % defaultColors.length],
+                ...p,
+              }))
+            );
+          }
           if (typeof payload.currentPlayerIndex === "number") setCurrentPlayerIndex(payload.currentPlayerIndex);
           if (typeof payload.currentThrowIndex === "number") setCurrentThrowIndex(payload.currentThrowIndex);
           // persist when resuming

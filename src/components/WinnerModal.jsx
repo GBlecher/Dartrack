@@ -11,8 +11,8 @@ export default function WinnerModal() {
   const otherPlayers = players.filter((_, idx) => idx !== winner.playerIndex);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md text-black">
+    <div className="winner-modal fixed inset-0 bg-black/50 flex items-center justify-center z-60">
+      <div className="winner-modal__panel bg-white rounded-lg p-6 w-full max-w-md text-black">
         <h2 className="text-2xl font-bold mb-4">Congrats {winner.name} — you won!!!</h2>
 
         <div className="mb-4">

@@ -8,17 +8,39 @@ import WinnerModal from "../components/WinnerModal";
 import Header from "../components/Header";
 
 export default function GamePage() {
-  useGame();
+  const { players, currentPlayerIndex } = useGame();
 
-  // ButtonGrid already uses context's addThrow; keep GamePage simple
+  const activeColor = players && players.length > 0 ? (players[currentPlayerIndex]?.color || "#0f172a") : "#0f172a";
+
   return (
-    <div className="min-h-screen bg-slate-900 p-4">
-      <Header />
-      <PlayerTabs />
-      <ScoreBoard />
-      <ButtonGrid />
-  <EndTurnModal />
-  <WinnerModal />
+    <div className="game-page min-h-screen">
+      {/* top nav bar stays the original dark color */}
+      <div className="app-nav w-full bg-slate-900 mx-auto" style={{ maxWidth: 900 }}>
+        <div className="nav-inner max-w-4xl mx-auto relative" style={{ minHeight: 56 }}>
+          <div className="flex items-center justify-between" style={{ minHeight: 56 }}>
+            <div style={{ display: 'flex', alignItems: 'center', height: 56 }}>
+              <Header />
+            </div>
+            {/* placeholder so header and tabs share the row */}
+            <div style={{ width: 200 }} />
+          </div>
+          {/* position tabs so their bottom edge sits exactly at the nav bottom */}
+          <div className="player-tabs-wrapper" style={{ position: 'absolute', right: 20, bottom: -1 }}>
+            <PlayerTabs />
+          </div>
+        </div>
+      </div>
+
+      {/* main game area uses the active player's color */}
+      <div className="game-main p-4 mx-auto" style={{ backgroundColor: activeColor, minHeight: 'calc(100vh - 72px)', maxWidth: "900px" }}>
+        <div className="game-container max-w-4xl mx-auto">
+          <ScoreBoard />
+          <ButtonGrid />
+        </div>
+      </div>
+
+      <EndTurnModal />
+      <WinnerModal />
     </div>
   );
 }

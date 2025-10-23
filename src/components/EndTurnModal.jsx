@@ -20,8 +20,8 @@ export default function EndTurnModal() {
   if (!player) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-60">
-      <div className="endTurnModal bg-white rounded-lg p-6 w-full max-w-md text-black">
+    <div className="endturn-modal fixed inset-0 bg-black/50 flex items-center justify-center z-60">
+      <div className="endturn-modal__panel endTurnModal bg-white rounded-lg p-6 w-full max-w-md text-black">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold mb-2">End of Turn — {player.name}</h3>
           {isBust && <span className="ml-2 px-2 py-1 bg-red-600 text-white rounded">BUST</span>}

@@ -170,12 +170,13 @@ export default function ButtonGrid() {
   const numbers = Array.from({ length: 20 }, (_, i) => i + 1);
 
   return (
-    <div className="buttonGrid relative flex flex-col items-center space-y-4">
-      <div className="flex space-x-2 flex-wrap justify-center">
+  <div className="button-grid buttonGrid relative flex flex-col items-center space-y-4">
+      {/* match the numbers grid max width so special buttons never exceed other components */}
+      <div className="flex space-x-2 justify-center flex-nowrap w-full max-w-md mx-auto">
         {specialButtons.map((btn) => (
-          <button
-            key={btn}
-            className="specialButtons bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            <button
+              key={btn}
+              className="specialButtons bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 flex-1 min-w-[56px] text-xs flex items-center justify-center"
             onPointerDown={(e) => startPress(btn, false, e)}
             onPointerUp={(e) => endPress(btn, false, e)}
             onPointerCancel={cancelPress}
@@ -203,13 +204,11 @@ export default function ButtonGrid() {
                   break;
               }
             }}
-          >
-            {btn}
-          </button>
+              ><span className="block text-center">{btn}</span></button>
         ))}
       </div>
 
-      <div className="regButtons grid grid-cols-5 gap-2 w-full max-w-md">
+  <div className="reg-buttons regButtons grid grid-cols-5 gap-2 w-full max-w-md">
         {numbers.map((num) => (
           <button
             key={num}
@@ -233,7 +232,7 @@ export default function ButtonGrid() {
           className="fixed text-white p-0 rounded shadow-lg z-50 flex flex-col items-stretch overflow-visible"
           style={{ top: popupPos.y, left: popupPos.x, width: popupPos.width || popupInfo.anchorRect.width }}
         >
-          {[3, 2].map((mult) => (
+          {[2, 3].map((mult) => (
             <button
               key={mult}
               className={`px-4 m-0 rounded hover:brightness-90 ${getMultiplierColor(popupInfo.score)}`}
