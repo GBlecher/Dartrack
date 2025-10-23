@@ -21,16 +21,16 @@ export default function EndTurnModal() {
 
   return (
     <div className="endturn-modal fixed inset-0 bg-black/50 flex items-center justify-center z-60">
-      <div className="endturn-modal__panel endTurnModal bg-white rounded-lg p-6 w-full max-w-md text-black">
+      <div className="endturn-modal__panel endTurnModal bg-white rounded-lg p-4 md:p-8 w-full max-w-md md:max-w-2xl text-black">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold mb-2">End of Turn — {player.name}</h3>
+          <h3 className="text-xl md:text-2xl font-bold mb-2">End of Turn — {player.name}</h3>
           {isBust && <span className="ml-2 px-2 py-1 bg-red-600 text-white rounded">BUST</span>}
         </div>
 
-        <p className="mb-2">Starting Score: {player.playerScore}</p>
-        <p className="mb-4">Turn Score: {player.turnScore}</p>
-        <div className="text-sm text-gray-600">Tap on score to edit:</div>
-        <div className="endTurnThrows flex gap-2 mt-2">
+        <p className="mb-2 text-lg md:text-xl">Starting Score: {player.playerScore}</p>
+        <p className="mb-4 text-lg md:text-xl">Turn Score: {player.turnScore}</p>
+        <div className="text-sm md:text-base text-gray-600">Tap on score to edit:</div>
+          <div className="endTurnThrows flex gap-3 mt-3">
         
           {player.throws.map((t, i) => (
             <div key={i} className="flex flex-col items-center">
@@ -40,7 +40,7 @@ export default function EndTurnModal() {
                 pattern="[0-9]*"
                 defaultValue={t.score}
                 onBlur={(e) => updateThrowForCurrentPlayer(i, Number(e.target.value || 0), t.type)}
-                className="px-3 py-2 bg-gray-100 rounded w-20 text-center appearance-none"
+                className="px-3 py-2 md:px-4 md:py-3 bg-gray-100 rounded w-20 md:w-28 text-center appearance-none text-lg"
               />
             </div>
           ))}

@@ -32,11 +32,16 @@ export default function GamePage() {
       </div>
 
       {/* main game area uses the active player's color */}
-      <div className="game-main p-4 mx-auto" style={{ backgroundColor: activeColor, minHeight: 'calc(100vh - 72px)', maxWidth: "900px" }}>
-        <div className="game-container max-w-4xl mx-auto">
-          <ScoreBoard />
-          <ButtonGrid />
-        </div>
+      <div
+        className="game-main p-4 mx-auto max-w-4xl flex flex-col items-stretch py-6"
+        style={{ backgroundColor: activeColor, minHeight: 'calc(100vh - 72px)', maxWidth: '900px', gap: '6rem' }}
+      >
+          <div className="score-wrapper mt-4 md:mt-6">
+            <ScoreBoard />
+          </div>
+          <div className="grid-wrapper mt-2 md:mt-3">
+            <ButtonGrid />
+          </div>
       </div>
 
       <EndTurnModal />
