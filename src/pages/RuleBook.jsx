@@ -29,7 +29,7 @@ export default function RuleBook() {
         <p className="mb-3">Each dart scores the number it hits on the board. Outer bullseye (BULL) = 25 points, inner bullseye (CHERRY) = 50 points. Doubles and triples multiply the segment score by 2 or 3.</p>
 
         <h2 className="font-semibold">How to Win:</h2>
-        <p className="mb-3">To finish, you must reach exactly zero. Your last dart must land on a double or bullseye. If your final score becomes zero without ending on a double or bullseye, it is a bust.</p>
+        <p className="mb-3">To finish, you must reach exactly zero. Your last dart must land on a double. If your final score becomes zero without ending on a double, it is a bust.</p>
 
         <h2 className="font-semibold">Busting (Making a Mistake):</h2>
         <p className="mb-3">A bust occurs when:</p>
