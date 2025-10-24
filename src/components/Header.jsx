@@ -1,6 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+/*
+ * Header (hamburger menu)
+ * Small navigation drawer used in the game page. Provides access to the
+ * Rule Book and an Exit action. The drawer manages its own open/close state
+ * and keyboard escape handling.
+ */
 export default function Header() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
@@ -61,6 +67,17 @@ export default function Header() {
           <button
             className="w-full text-left px-4 py-3 hover:bg-gray-100 rounded"
             onClick={() => {
+              // navigate to rulebook and pass the current path so the rule page can return
+              navigate('/rules', { state: { from: window.location.pathname } });
+              setOpen(false);
+            }}
+          >
+            Rule Book
+          </button>
+
+          <button
+            className="w-full text-left px-4 py-3 hover:bg-gray-100 rounded"
+            onClick={() => {
               exitGame();
               setOpen(false);
             }}
@@ -68,8 +85,7 @@ export default function Header() {
             Exit Game
           </button>
 
-          {/* Placeholder for future items */}
-          <div className="text-sm text-gray-500 mt-6">More menu items coming...</div>
+         
         </nav>
       </aside>
     </>

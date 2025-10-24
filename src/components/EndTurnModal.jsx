@@ -1,6 +1,11 @@
 import React from "react";
 import { useGame } from "../context/GameContext";
 
+/*
+ * EndTurnModal
+ * Modal shown at the end of a player's turn. Allows inline editing of the
+ * three throw slots, and provides Undo (for busts) and Continue actions.
+ */
 export default function EndTurnModal() {
   const {
     showEndTurnModal,

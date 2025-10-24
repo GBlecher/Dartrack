@@ -2,6 +2,12 @@
 import React, { useState, useRef } from "react";
 import { useGame } from "../context/GameContext";
 
+/*
+ * PlayerTabs
+ * Renders the per-player tabs shown at the top of the game. Tabs are
+ * editable inline: click a tab to edit the player's name. Uses colors
+ * to indicate the active player.
+ */
 export default function PlayerTabs() {
   const { players, currentPlayerIndex, updatePlayerName } = useGame();
   const [editingIndex, setEditingIndex] = useState(null);

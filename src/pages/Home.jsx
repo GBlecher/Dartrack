@@ -2,6 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext";
 
+/*
+ * Home
+ * Landing page for the app. Offers buttons to start a new game or resume
+ * a previously saved game if one exists in localStorage.
+ */
 export default function Home() {
   const navigate = useNavigate();
   const { resumeGame, resetGame } = useGame();

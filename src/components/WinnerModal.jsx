@@ -2,8 +2,13 @@ import React from "react";
 import { useGame } from "../context/GameContext";
 import { useNavigate } from "react-router-dom";
 
+/*
+ * WinnerModal
+ * Shown when a player finishes the game. Allows undoing the last throw
+ * (to revert an accidental winning throw), starting a new game, or exit.
+ */
 export default function WinnerModal() {
-  const { winner, players, clearWinner, resetGame } = useGame();
+  const { winner, players, clearWinner, resetGame, undoLastThrow } = useGame();
   const navigate = useNavigate();
 
   if (!winner) return null;
@@ -24,6 +29,16 @@ export default function WinnerModal() {
         </div>
 
         <div className="flex gap-2 justify-end">
+          <button
+            className="px-4 py-2 rounded bg-yellow-300"
+            onClick={() => {
+              // undo the last throw that ended the game and close the winner modal
+              undoLastThrow();
+              clearWinner();
+            }}
+          >
+            Undo
+          </button>
           <button
             className="px-4 py-2 rounded bg-gray-200"
             onClick={() => {

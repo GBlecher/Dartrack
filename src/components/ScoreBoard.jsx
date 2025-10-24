@@ -1,8 +1,14 @@
 
-
 import React from "react";
 import { useGame } from "../context/GameContext";
 
+/*
+ * ScoreBoard
+ * Displays the active player's total and turn scores plus the three
+ * individual throw slots for the current turn. This component reads
+ * lightweight state from GameContext and renders the current throw
+ * highlighted.
+ */
 export default function ScoreBoard() {
   const { players, currentPlayerIndex, currentThrowIndex } = useGame();
   const player = players[currentPlayerIndex];

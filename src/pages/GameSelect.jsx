@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useGame } from "../context/GameContext";
 
+/*
+ * GameSelect
+ * Simple selector for the available game types (301 / 501). Calls
+ * GameContext.startGame and navigates into the game route.
+ */
 export default function GameSelect() {
   const navigate = useNavigate();
   const { startGame } = useGame();

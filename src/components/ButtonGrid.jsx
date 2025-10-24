@@ -1,6 +1,15 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { useGame } from "../context/GameContext";
 
+/*
+ * ButtonGrid
+ * Numeric keypad and special buttons used to record dart throws.
+ * Interaction notes:
+ * - Tap a number quickly to record a single (addThrow(num, 'single')).
+ * - Long-press a number to open the multiplier popup; hold-and-drag
+ *   over 3 or 2 and release to commit triple/double respectively.
+ * - Special buttons (BULL, CHERRY, BUST, UNDO) are handled separately.
+ */
 export default function ButtonGrid() {
   const { addThrow, turnEnded, undoLastThrow } = useGame();
 

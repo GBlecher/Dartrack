@@ -7,13 +7,19 @@ import EndTurnModal from "../components/EndTurnModal";
 import WinnerModal from "../components/WinnerModal";
 import Header from "../components/Header";
 
+/*
+ * GamePage
+ * Top-level game layout combining header, player tabs, scoreboard and
+ * the input keypad. Uses the active player's color as a background
+ * accent and mounts the various modals used during play.
+ */
 export default function GamePage() {
   const { players, currentPlayerIndex } = useGame();
 
   const activeColor = players && players.length > 0 ? (players[currentPlayerIndex]?.color || "#0f172a") : "#0f172a";
 
   return (
-    <div className="game-page min-h-screen">
+    <div className="game-page min-h-screen" >
       {/* top nav bar stays the original dark color */}
       <div className="app-nav w-full bg-slate-900 mx-auto" style={{ maxWidth: 900 }}>
         <div className="nav-inner max-w-4xl mx-auto relative" style={{ minHeight: 56 }}>

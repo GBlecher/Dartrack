@@ -1,9 +1,25 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+/*
+ * GameContext
+ * Centralized game state and actions for Dartrack.
+ * Exports:
+ * - useGame(): hook to consume game state and actions
+ * - GameProvider: context provider wrapping the app
+ *
+ * Key behaviors:
+ * - Manages players, current turn/throw indices, busts and winners
+ * - addThrow / undoLastThrow / undoBust manage throw lifecycle
+ * - Persists a short-lived saved game in localStorage (3h)
+ */
+
 const GameContext = createContext();
 
-
-
+/**
+ * useGame
+ * Lightweight consumer hook. Throws if used outside a GameProvider.
+ * Returns the game state and action functions used across the app.
+ */
 export const useGame = () => {
   const context = useContext(GameContext);
   if (!context) throw new Error("useGame must be used within a GameProvider");
