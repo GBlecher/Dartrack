@@ -22,7 +22,6 @@ export default function ButtonGrid() {
 
   const [popupInfo, setPopupInfo] = useState(null); // { score, anchorRect }
   const [hoveredMult, setHoveredMult] = useState(null); // 2 or 3 when pointer over multiplier
-  const [tappedNumber, setTappedNumber] = useState(null); // transient visual feedback for quick taps
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
   const [holdHintPos, setHoldHintPos] = useState(null);
@@ -139,10 +138,7 @@ export default function ButtonGrid() {
     } else if (!longPressFiredRef.current) {
       // quick tap: only record as a single if this is a numeric (holdable) button.
       if (isHoldable) {
-        // show a short visual tap feedback before/while we commit the throw
-        setTappedNumber(num);
         addThrow(num, "single");
-        setTimeout(() => setTappedNumber(null), 150);
       }
       // for special (non-holdable) buttons we handle actions in their onClick handler
     }
@@ -260,9 +256,8 @@ export default function ButtonGrid() {
       e.preventDefault();
       if (typeof hideHoldHint === "function") hideHoldHint();
       // provide quick visual feedback for keyboard-triggered presses
-      setTappedNumber(num);
       addThrow(num, "single");
-      setTimeout(() => setTappedNumber(null), 150);
+      // short-circuit: keyboard clicks also close popup if open
       // close popup on keyboard-triggered clicks if open
       if (popupInfo) closePopup();
     }
@@ -323,15 +318,12 @@ export default function ButtonGrid() {
           const disabledNum = Boolean(popupInfo && popupInfo.score !== num);
           const isHeld = Boolean(popupInfo && popupInfo.score === num);
           const isPlayer2 = currentPlayerIndex === 1;
-          // For player 2, use the exact hex color requested for regular numeric buttons.
-          const numBaseClass = isPlayer2 ? 'text-white hover:brightness-90' : 'bg-blue-500 text-white hover:bg-blue-600';
-          const numInlineStyle = isPlayer2 ? { backgroundColor: '#309D7F' } : undefined;
           return (
             <button
               key={num}
               id={`btn-${num}`}
               className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative touch-none ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
-              style={currentPlayerIndex === 1 ? { backgroundColor: '#309D7F' } : undefined}
+              style={isPlayer2 ? { backgroundColor: '#309D7F' } : undefined}
               onPointerDown={(e) => startPress(num, true, e)}
               onPointerUp={(e) => endPress(num, true, e)}
               onPointerCancel={cancelPress}
