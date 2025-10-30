@@ -12,7 +12,7 @@ import HoldHint from "./HoldHint";
  * - Special buttons (BULL, CHERRY, BUST, UNDO) are handled separately.
  */
 export default function ButtonGrid() {
-  const { addThrow, turnEnded, undoLastThrow, showHoldHint, hideHoldHint } = useGame();
+  const { addThrow, turnEnded, undoLastThrow, showHoldHint, hideHoldHint, currentPlayerIndex } = useGame();
 
   const HOLD_MS = 200;
   const holdTimerRef = useRef(null);
@@ -321,6 +321,7 @@ export default function ButtonGrid() {
               key={num}
               id={`btn-${num}`}
               className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative touch-none ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
+              style={currentPlayerIndex === 1 ? { backgroundColor: '#309D7F' } : undefined}
               onPointerDown={(e) => startPress(num, true, e)}
               onPointerUp={(e) => endPress(num, true, e)}
               onPointerCancel={cancelPress}
