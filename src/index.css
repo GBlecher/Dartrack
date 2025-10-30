@@ -6,6 +6,10 @@ html, body {
   height: 100%;
   margin: 0;       /* remove default margin */
   padding: 0;      /* remove default padding */
+  /* Prevent any page-level scrolling — app content should size itself to
+     the visible viewport. If you need scrollable regions, make them
+     explicitly scrollable with `overflow: auto` on the inner container. */
+  overflow: hidden;
   
 }
 
@@ -22,5 +26,6 @@ html, body {
 #root {
   height: calc(var(--vh, 1vh) * 100);
   overscroll-behavior: none; /* avoid bounce/overscroll showing browser chrome */
+  overflow: hidden;
 }
 

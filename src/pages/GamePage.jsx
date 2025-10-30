@@ -19,7 +19,9 @@ export default function GamePage() {
   const activeColor = players && players.length > 0 ? (players[currentPlayerIndex]?.color || "#0f172a") : "#0f172a";
 
   return (
-    <div className="game-page min-h-screen" >
+    // Force the page container to match the visible viewport (set by --vh)
+    // and hide document-level overflow so no page scroll appears.
+    <div className="game-page" style={{ height: 'calc(var(--vh, 1vh) * 100)', overflow: 'hidden' }}>
       {/* top nav bar stays the original dark color */}
       <div className="app-nav w-full bg-slate-900 mx-auto" style={{ maxWidth: 900 }}>
         <div className="nav-inner max-w-4xl mx-auto relative" style={{ minHeight: 56 }}>
@@ -40,12 +42,12 @@ export default function GamePage() {
       {/* main game area uses the active player's color */}
       <div
         className="game-main p-4 mx-auto max-w-4xl flex flex-col items-stretch py-6"
-        style={{ backgroundColor: activeColor, minHeight: '100vh', maxWidth: '900px', gap: '6rem' }}
+        style={{ backgroundColor: activeColor, height: 'calc(var(--vh, 1vh) * 100 - 56px)', maxWidth: '900px', gap: '6rem', overflow: 'hidden' }}
       >
-          <div className="score-wrapper mt-4 md:mt-6">
+          <div className="score-wrapper mt-4 md:mt-6" style={{ flex: '0 0 auto' }}>
             <ScoreBoard />
           </div>
-          <div className="grid-wrapper mt-2 md:mt-3">
+          <div className="grid-wrapper mt-2 md:mt-3" style={{ flex: '1 1 auto', overflow: 'hidden' }}>
             <ButtonGrid />
           </div>
       </div>
