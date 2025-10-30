@@ -15,7 +15,7 @@ export default function ScoreBoard() {
   if (!player) return null;
 
   return (
-    <div className="score-board scoreBoard bg-gray-800 rounded-lg p-6 text-white w-full mx-auto mb-6">
+    <div className="score-board scoreBoard bg-gray-800 rounded-lg p-6 text-white w-full mx-auto mb-0">
       <div className="flex flex-col gap-3 md:gap-4">
         <p className="text-lg md:text-xl font-semibold">Total Score: <span className="font-normal">{player.playerScore}</span></p>
         <p className="text-lg md:text-xl font-semibold">Turn Score: <span className="font-normal">{player.turnScore}</span></p>
