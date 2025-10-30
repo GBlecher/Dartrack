@@ -22,6 +22,7 @@ export default function ButtonGrid() {
 
   const [popupInfo, setPopupInfo] = useState(null); // { score, anchorRect }
   const [hoveredMult, setHoveredMult] = useState(null); // 2 or 3 when pointer over multiplier
+  const [selectingNumber, setSelectingNumber] = useState(null); // transient press feedback
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
   const [holdHintPos, setHoldHintPos] = useState(null);
@@ -110,6 +111,9 @@ export default function ButtonGrid() {
 
   if (!isHoldable) return;
 
+  // mark which number is being pressed to provide immediate visual feedback
+  setSelectingNumber(num);
+
   // don't visually disable other buttons yet — only disable once the multiplier
   // popup actually opens (better UX for quick taps).
 
@@ -148,6 +152,7 @@ export default function ButtonGrid() {
       ignoreClickRef.current = false;
       longPressFiredRef.current = false;
       activePointerRef.current = null;
+      setSelectingNumber(null);
     }, 300);
   };
 
@@ -160,7 +165,7 @@ export default function ButtonGrid() {
     }
     longPressFiredRef.current = false;
     activePointerRef.current = null;
-    // no selectingNumber state to clear — popup presence drives the UI
+    setSelectingNumber(null);
   };
 
   // While popup is open, listen to pointermove/up to track which multiplier is under the pointer
@@ -198,12 +203,13 @@ export default function ButtonGrid() {
           addThrow(popupInfo.score, "single");
         }
       }
-    // close popup and reset
+      // close popup and reset
     setPopupInfo(null);
     setHoveredMult(null);
       longPressFiredRef.current = false;
       ignoreClickRef.current = false;
       activePointerRef.current = null;
+      setSelectingNumber(null);
     };
 
     const onPointerCancel = () => {
@@ -212,6 +218,7 @@ export default function ButtonGrid() {
       longPressFiredRef.current = false;
       ignoreClickRef.current = false;
       activePointerRef.current = null;
+      setSelectingNumber(null);
     };
 
     document.addEventListener("pointermove", onPointerMove);
@@ -316,13 +323,13 @@ export default function ButtonGrid() {
   <div className="reg-buttons regButtons grid grid-cols-5 gap-2 w-full">
         {numbers.map((num) => {
           const disabledNum = Boolean(popupInfo && popupInfo.score !== num);
-          const isHeld = Boolean(popupInfo && popupInfo.score === num);
+          const isHeld = Boolean((selectingNumber && selectingNumber === num) || (popupInfo && popupInfo.score === num));
           const isPlayer2 = currentPlayerIndex === 1;
           return (
             <button
               key={num}
               id={`btn-${num}`}
-              className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative touch-none ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
+              className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative touch-none transition-transform duration-75 ease-out active:scale-95 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
               style={isPlayer2 ? { backgroundColor: '#309D7F' } : undefined}
               onPointerDown={(e) => startPress(num, true, e)}
               onPointerUp={(e) => endPress(num, true, e)}
