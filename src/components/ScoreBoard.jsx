@@ -19,7 +19,7 @@ export default function ScoreBoard() {
       <div className="flex flex-col gap-3 md:gap-4">
         <p className="text-lg md:text-xl font-semibold">Total Score: <span className="font-normal">{player.playerScore}</span></p>
         <p className="text-lg md:text-xl font-semibold">Turn Score: <span className="font-normal">{player.turnScore}</span></p>
-        <p className="text-md md:text-lg">Last Throw: <span className="font-medium">{player.lastThrowType || " "}</span></p>
+        <p className="text-md md:text-lg">Throw Type: <span className="font-medium">{player.lastThrowType || " "}</span></p>
       </div>
 
       <div className="flex gap-3 mt-4 flex-wrap justify-start">

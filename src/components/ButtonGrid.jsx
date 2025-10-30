@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from "react";
 import { useGame } from "../context/GameContext";
+import HoldHint from "./HoldHint";
 
 /*
  * ButtonGrid
@@ -11,9 +12,9 @@ import { useGame } from "../context/GameContext";
  * - Special buttons (BULL, CHERRY, BUST, UNDO) are handled separately.
  */
 export default function ButtonGrid() {
-  const { addThrow, turnEnded, undoLastThrow } = useGame();
+  const { addThrow, turnEnded, undoLastThrow, showHoldHint, hideHoldHint } = useGame();
 
-  const HOLD_MS = 500;
+  const HOLD_MS = 200;
   const holdTimerRef = useRef(null);
   const longPressFiredRef = useRef(false);
   const ignoreClickRef = useRef(false);
@@ -24,6 +25,7 @@ export default function ButtonGrid() {
   const [selectingNumber, setSelectingNumber] = useState(null); // number currently being pressed (before popup)
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
+  const [holdHintPos, setHoldHintPos] = useState(null);
 
   // Standard dartboard sequence (clockwise) used to pick colors like before
   const dartboardNumbers = [20, 1, 18, 4, 13, 6, 10, 15, 2, 17, 3, 19, 7, 16, 8, 11, 14, 9, 12, 5];
@@ -99,6 +101,10 @@ export default function ButtonGrid() {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
     activePointerRef.current = e?.pointerId ?? null;
     longPressFiredRef.current = false;
+
+    // hide the hold hint as soon as the user interacts with the grid
+    // hideHoldHint exists in context; call defensively
+    if (typeof hideHoldHint === "function") hideHoldHint();
 
     // if a popup is already open for another number, ignore other presses
     if (popupInfo && popupInfo.score !== num) return;
@@ -221,6 +227,24 @@ export default function ButtonGrid() {
     };
   }, [popupInfo, hoveredMult, addThrow]);
 
+  // position the hold hint over the '3' button when shown
+  useEffect(() => {
+    if (!showHoldHint) {
+      setHoldHintPos(null);
+      return;
+    }
+    const el = document.getElementById("btn-3");
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setHoldHintPos({ x: rect.left, y: rect.top, width: rect.width, height: rect.height });
+    const onResize = () => {
+      const r = el.getBoundingClientRect();
+      setHoldHintPos({ x: r.left, y: r.top, width: r.width, height: r.height });
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [showHoldHint]);
+
   // selectMultiplier removed in favor of hold-and-drag selection
 
   const handleClickGuard = (e) => {
@@ -233,6 +257,7 @@ export default function ButtonGrid() {
   const handleKeyDown = (num, e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
+      if (typeof hideHoldHint === "function") hideHoldHint();
       addThrow(num, "single");
       // close popup on keyboard-triggered clicks if open
       if (popupInfo) closePopup();
@@ -244,6 +269,8 @@ export default function ButtonGrid() {
 
   return (
   <div className="button-grid buttonGrid relative flex flex-col items-center space-y-4">
+    {/* hint bubble that appears on new game start */}
+  <HoldHint show={showHoldHint} onClose={hideHoldHint} pos={holdHintPos} />
       {/* match the numbers grid max width so special buttons never exceed other components */}
       <div className="flex space-x-2 justify-center flex-nowrap w-full mx-auto">
         {specialButtons.map((btn) => {
@@ -259,6 +286,7 @@ export default function ButtonGrid() {
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
+              if (typeof hideHoldHint === "function") hideHoldHint();
               switch (btn) {
                 case "MISS":
                   addThrow(0, "MISS");
@@ -315,7 +343,7 @@ export default function ButtonGrid() {
           {[3, 2].map((mult) => (
             <button
               key={mult}
-              className={`px-4 m-0 rounded transform transition-transform touch-none ${getMultiplierColor(popupInfo.score)} ${hoveredMult === mult ? 'scale-110' : ''}`}
+              className={`px-4 m-0 rounded transition-transform touch-none ${getMultiplierColor(popupInfo.score)} ${hoveredMult === mult ? 'scale-110' : ''}`}
               style={{ width: "100%", height: popupPos.anchorH ? `${popupPos.anchorH}px` : undefined }}
               onPointerDown={(e) => {
                 // prevent the button behind from seeing this pointer and closing the popup
@@ -331,5 +359,6 @@ export default function ButtonGrid() {
         </div>
       )}
     </div>
+
   );
 }

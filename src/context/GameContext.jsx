@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 
 /*
  * GameContext
@@ -36,6 +36,8 @@ export const GameProvider = ({ children }) => {
   const [showEndTurnModal, setShowEndTurnModal] = useState(false);
   const [isBust, setIsBust] = useState(false);
   const [winner, setWinner] = useState(null);
+  const [showHoldHint, setShowHoldHint] = useState(false); // show "hold to open multiplier" hint
+  const holdHintTimerRef = useRef(null);
 
   const startGame = (type) => {
     setGameType(type);
@@ -70,7 +72,29 @@ export const GameProvider = ({ children }) => {
     setCurrentThrowIndex(0);
     setTurnEnded(false);
     setShowEndTurnModal(false);
+    // show the hold-to-open hint after a short delay so the user notices it
+    // Clear any previous timer first
+    if (holdHintTimerRef.current) {
+      clearTimeout(holdHintTimerRef.current);
+      holdHintTimerRef.current = null;
+    }
+    holdHintTimerRef.current = setTimeout(() => {
+      setShowHoldHint(true);
+      holdHintTimerRef.current = null;
+    }, 500); // 500ms
   };
+
+  const hideHoldHint = () => setShowHoldHint(false);
+
+  // ensure timers are cleaned up when provider unmounts or players reset
+  useEffect(() => {
+    return () => {
+      if (holdHintTimerRef.current) {
+        clearTimeout(holdHintTimerRef.current);
+        holdHintTimerRef.current = null;
+      }
+    };
+  }, []);
 
   const addThrow = (dartScore, throwType) => {
     // snapshot current player before change (for undo/bust)
@@ -393,6 +417,8 @@ export const GameProvider = ({ children }) => {
   addThrow,
   undoLastThrow,
   undoBust,
+  showHoldHint,
+  hideHoldHint,
   winner,
   clearWinner,
         updatePlayerName,
