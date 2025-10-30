@@ -3,7 +3,17 @@
   <head>
     <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/dartboard.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <!-- Use viewport-fit=cover so the app can lay out into the full screen on devices
+      that support the iOS/Android safe-area insets. Avoid disabling scaling for
+      accessibility — keep a reasonable default. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- PWA / standalone helpers: users who install the app to home screen may run
+      in a standalone context without browser chrome. theme-color helps tint the
+      UI on Android. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="manifest" href="/manifest.json" />
     <title>Dartrack</title>
   </head>
   <body>

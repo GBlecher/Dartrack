@@ -9,3 +9,18 @@ html, body {
   
 }
 
+/* --vh is set at runtime (see src/main.jsx) to be 1% of the visible viewport
+   height (useful on mobile where the browser chrome can show/hide). Use as:
+     height: calc(var(--vh, 1vh) * 100);
+*/
+:root {
+  --vh: 1vh;
+}
+
+/* Make the React root use the visible viewport height. This prevents 100vh
+   layout issues where mobile browser chrome causes content to be too tall. */
+#root {
+  height: calc(var(--vh, 1vh) * 100);
+  overscroll-behavior: none; /* avoid bounce/overscroll showing browser chrome */
+}
+

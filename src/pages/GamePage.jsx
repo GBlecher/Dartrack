@@ -40,7 +40,7 @@ export default function GamePage() {
       {/* main game area uses the active player's color */}
       <div
         className="game-main p-4 mx-auto max-w-4xl flex flex-col items-stretch py-6"
-        style={{ backgroundColor: activeColor, minHeight: 'calc(100vh - 72px)', maxWidth: '900px', gap: '6rem' }}
+        style={{ backgroundColor: activeColor, minHeight: '100vh', maxWidth: '900px', gap: '6rem' }}
       >
           <div className="score-wrapper mt-4 md:mt-6">
             <ScoreBoard />
