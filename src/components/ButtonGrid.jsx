@@ -12,7 +12,7 @@ import HoldHint from "./HoldHint";
  * - Special buttons (BULL, CHERRY, BUST, UNDO) are handled separately.
  */
 export default function ButtonGrid() {
-  const { addThrow, turnEnded, undoLastThrow, showHoldHint, hideHoldHint } = useGame();
+  const { addThrow, turnEnded, undoLastThrow, showHoldHint, hideHoldHint, currentPlayerIndex } = useGame();
 
   const HOLD_MS = 200;
   const holdTimerRef = useRef(null);
@@ -22,7 +22,7 @@ export default function ButtonGrid() {
 
   const [popupInfo, setPopupInfo] = useState(null); // { score, anchorRect }
   const [hoveredMult, setHoveredMult] = useState(null); // 2 or 3 when pointer over multiplier
-  const [selectingNumber, setSelectingNumber] = useState(null); // number currently being pressed (before popup)
+  const [tappedNumber, setTappedNumber] = useState(null); // transient visual feedback for quick taps
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
   const popupRef = useRef(null);
   const [holdHintPos, setHoldHintPos] = useState(null);
@@ -111,13 +111,14 @@ export default function ButtonGrid() {
 
   if (!isHoldable) return;
 
-  // mark which number is being pressed so other buttons can be visually disabled
-  setSelectingNumber(num);
+  // don't visually disable other buttons yet — only disable once the multiplier
+  // popup actually opens (better UX for quick taps).
 
     holdTimerRef.current = setTimeout(() => {
       longPressFiredRef.current = true;
       ignoreClickRef.current = true; // prevent next synthetic click
       openPopupFor(num);
+
     }, HOLD_MS);
   };
 
@@ -138,7 +139,10 @@ export default function ButtonGrid() {
     } else if (!longPressFiredRef.current) {
       // quick tap: only record as a single if this is a numeric (holdable) button.
       if (isHoldable) {
+        // show a short visual tap feedback before/while we commit the throw
+        setTappedNumber(num);
         addThrow(num, "single");
+        setTimeout(() => setTappedNumber(null), 150);
       }
       // for special (non-holdable) buttons we handle actions in their onClick handler
     }
@@ -148,7 +152,6 @@ export default function ButtonGrid() {
       ignoreClickRef.current = false;
       longPressFiredRef.current = false;
       activePointerRef.current = null;
-      setSelectingNumber(null);
     }, 300);
   };
 
@@ -161,7 +164,7 @@ export default function ButtonGrid() {
     }
     longPressFiredRef.current = false;
     activePointerRef.current = null;
-    setSelectingNumber(null);
+    // no selectingNumber state to clear — popup presence drives the UI
   };
 
   // While popup is open, listen to pointermove/up to track which multiplier is under the pointer
@@ -199,19 +202,17 @@ export default function ButtonGrid() {
           addThrow(popupInfo.score, "single");
         }
       }
-      // close popup and reset
-      setPopupInfo(null);
-      setHoveredMult(null);
-      setSelectingNumber(null);
+    // close popup and reset
+    setPopupInfo(null);
+    setHoveredMult(null);
       longPressFiredRef.current = false;
       ignoreClickRef.current = false;
       activePointerRef.current = null;
     };
 
     const onPointerCancel = () => {
-      setPopupInfo(null);
-      setHoveredMult(null);
-      setSelectingNumber(null);
+    setPopupInfo(null);
+    setHoveredMult(null);
       longPressFiredRef.current = false;
       ignoreClickRef.current = false;
       activePointerRef.current = null;
@@ -258,7 +259,10 @@ export default function ButtonGrid() {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       if (typeof hideHoldHint === "function") hideHoldHint();
+      // provide quick visual feedback for keyboard-triggered presses
+      setTappedNumber(num);
       addThrow(num, "single");
+      setTimeout(() => setTappedNumber(null), 150);
       // close popup on keyboard-triggered clicks if open
       if (popupInfo) closePopup();
     }
@@ -274,11 +278,13 @@ export default function ButtonGrid() {
       {/* match the numbers grid max width so special buttons never exceed other components */}
       <div className="flex space-x-2 justify-center flex-nowrap w-full mx-auto">
         {specialButtons.map((btn) => {
-          const specialDisabled = Boolean(selectingNumber || popupInfo); // disable special buttons while selecting a multiplier
+          const specialDisabled = Boolean(popupInfo); // disable special buttons while multiplier popup is open
+          // Special buttons keep their original styling (do not change per-player)
+          const specialBase = 'bg-red-500 text-white hover:bg-red-600';
           return (
             <button
               key={btn}
-              className={`specialButtons bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 flex-1 min-w-[56px] text-xs flex items-center justify-center lg:px-4 lg:py-3 lg:min-w-[112px] lg:text-sm ${specialDisabled ? 'opacity-40 pointer-events-none' : ''}`}
+              className={`specialButtons ${specialBase} px-2 py-1 rounded flex-1 min-w-[56px] text-xs flex items-center justify-center lg:px-4 lg:py-3 lg:min-w-[112px] lg:text-sm transition-transform duration-75 ease-out active:scale-95 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 ${specialDisabled ? 'opacity-40 pointer-events-none' : ''}`}
             onPointerDown={(e) => startPress(btn, false, e)}
             onPointerUp={(e) => endPress(btn, false, e)}
             onPointerCancel={cancelPress}
@@ -314,13 +320,18 @@ export default function ButtonGrid() {
 
   <div className="reg-buttons regButtons grid grid-cols-5 gap-2 w-full">
         {numbers.map((num) => {
-          const disabledNum = Boolean((selectingNumber && selectingNumber !== num) || (popupInfo && popupInfo.score !== num));
-          const isHeld = Boolean((selectingNumber && selectingNumber === num) || (popupInfo && popupInfo.score === num));
+          const disabledNum = Boolean(popupInfo && popupInfo.score !== num);
+          const isHeld = Boolean(popupInfo && popupInfo.score === num);
+          const isPlayer2 = currentPlayerIndex === 1;
+          // For player 2, use the exact hex color requested for regular numeric buttons.
+          const numBaseClass = isPlayer2 ? 'text-white hover:brightness-90' : 'bg-blue-500 text-white hover:bg-blue-600';
+          const numInlineStyle = isPlayer2 ? { backgroundColor: '#309D7F' } : undefined;
           return (
             <button
               key={num}
               id={`btn-${num}`}
-              className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 relative touch-none ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
+              style={numInlineStyle}
+              className={`${numBaseClass} px-4 py-2 rounded relative ${disabledNum ? 'opacity-40 pointer-events-none' : ''} ${isHeld ? 'ring-2 ring-white scale-105' : ''} ${tappedNumber === num ? 'scale-95' : ''} transition-transform duration-75 ease-out active:scale-95 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 lg:px-8 lg:py-4 lg:text-2xl lg:min-w-[96px]`}
               onPointerDown={(e) => startPress(num, true, e)}
               onPointerUp={(e) => endPress(num, true, e)}
               onPointerCancel={cancelPress}
@@ -343,7 +354,7 @@ export default function ButtonGrid() {
           {[3, 2].map((mult) => (
             <button
               key={mult}
-              className={`px-4 m-0 rounded transition-transform touch-none ${getMultiplierColor(popupInfo.score)} ${hoveredMult === mult ? 'scale-110' : ''}`}
+              className={`px-4 m-0 rounded transition-transform duration-75 ease-out touch-none ${getMultiplierColor(popupInfo.score)} ${hoveredMult === mult ? 'scale-110' : ''} active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2`}
               style={{ width: "100%", height: popupPos.anchorH ? `${popupPos.anchorH}px` : undefined }}
               onPointerDown={(e) => {
                 // prevent the button behind from seeing this pointer and closing the popup
